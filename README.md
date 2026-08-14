@@ -116,9 +116,9 @@ oap-apply examples/code-reviewer.agent.yaml \
 
 | Level | Capability |
 | --- | --- |
-| **1 — Read** | Discover, validate, and instantiate an agent from a profile. |
-| **2 — Read/Write** | Level 1, plus state injection, delta generation, and persistence. |
-| **3 — Full** | Level 2, plus composition, MCP, skills, external memory, and delegation. |
+| **1, Read** | Discover, validate, and instantiate an agent from a profile. |
+| **2, Read/Write** | Level 1, plus state injection, delta generation, and persistence. |
+| **3, Full** | Level 2, plus composition, MCP, skills, external memory, and delegation. |
 
 An implementation must publish what it does not implement. Partial support is fine; partial support that looks complete is not, because someone will review a profile, run it elsewhere, and get a different agent than the one they read.
 
