@@ -1,0 +1,12 @@
+# INVALID: target.revision is required. Without it the applicator cannot detect
+# a conflict, and every write becomes a blind write.
+oap: "1.0"
+kind: AgentStateDelta
+target:
+  name: code-reviewer
+session:
+  id: sess_bad
+operations:
+  - op: add
+    path: /state/facts/-
+    value: {id: fact-x, text: something}

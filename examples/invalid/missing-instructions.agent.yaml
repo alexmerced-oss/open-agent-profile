@@ -1,0 +1,11 @@
+# INVALID: spec.role.instructions is required. A profile without instructions
+# has no agent in it.
+oap: "1.0"
+kind: AgentProfile
+metadata:
+  name: hollow
+  description: Declares a persona but no instructions.
+spec:
+  role:
+    persona:
+      tone: friendly

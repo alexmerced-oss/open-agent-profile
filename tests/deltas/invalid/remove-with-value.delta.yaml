@@ -1,0 +1,12 @@
+# INVALID: `remove` must not carry a value.
+oap: "1.0"
+kind: AgentStateDelta
+target:
+  name: code-reviewer
+  revision: 7
+session:
+  id: sess_bad
+operations:
+  - op: remove
+    path: /state/facts/0
+    value: {id: fact-x, text: something}

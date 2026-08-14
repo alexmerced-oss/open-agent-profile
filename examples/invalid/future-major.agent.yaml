@@ -1,0 +1,10 @@
+# INVALID for a 1.x implementation: violates L1-P3. A major version the resolver
+# does not implement must be rejected, not best-effort parsed.
+oap: "2.0"
+kind: AgentProfile
+metadata:
+  name: fromthefuture
+  description: Claims a major version this implementation does not support.
+spec:
+  role:
+    instructions: You do things.

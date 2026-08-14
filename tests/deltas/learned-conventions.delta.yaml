@@ -1,0 +1,70 @@
+# A normal session-end delta against examples/code-reviewer.agent.yaml at revision 7.
+# Adds a fact, updates a thread, and asks (but does not take) for a wider tool set.
+oap: "1.0"
+kind: AgentStateDelta
+
+target:
+  name: code-reviewer
+  id: urn:oap:agent:6f1c2a9e-6c7a-4a2e-9a0c-9f4b1d3e5c77
+  revision: 7
+
+session:
+  id: sess_01JDQ4X
+  harness: loro
+  harness_version: 0.11.0
+  started_at: 2026-08-14T19:02:00Z
+  ended_at: 2026-08-14T19:48:31Z
+  model_used: claude-sonnet-5
+  turns: 22
+  tool_calls: 61
+  cost_usd: 0.94
+  outcome: completed
+
+summary: >-
+  Learned that the team gates merges on coverage, reproduced the flaky auth test,
+  and requested shell access to run the suite directly.
+
+operations:
+  - op: add
+    path: /state/facts/-
+    value:
+      id: fact-coverage-gate
+      text: Merges are gated on 85 percent line coverage for changed files, enforced in CI.
+      confidence: 0.95
+      source: .github/workflows/ci.yml, confirmed by user
+      learned_at: 2026-08-14T19:20:00Z
+      tags: [conventions, ci]
+    reason: The user asked why a review missed a coverage regression.
+    confidence: 0.95
+
+  - op: replace
+    path: /state/open_threads/id:thread-flaky-auth-tests
+    value:
+      id: thread-flaky-auth-tests
+      title: Auth integration tests are flaky under parallel execution
+      detail: >-
+        Reproduced with pytest -n 4. The module-scoped token cache fixture is
+        shared across workers. Fix is to scope the fixture per function.
+      status: blocked
+      opened_at: 2026-07-28T10:00:00Z
+      updated_at: 2026-08-14T19:44:00Z
+      refs:
+        - tests/test_auth_flow.py
+        - conftest.py
+    reason: Root cause identified; blocked on a maintainer decision about fixture scope.
+
+  - op: replace
+    path: /state/summary
+    value: >-
+      Reviewing the platform team's Python services. The team autoformats with ruff
+      and gates merges on 85 percent coverage of changed files. Their recurring
+      defect class is authorization checks reading client-supplied fields.
+
+proposals:
+  - path: /spec/tools/allow
+    op: replace
+    value: [read, search, git/diff, git/log, shell]
+    rationale: >-
+      Could not verify the flaky test claim without running the suite. Reproduction
+      required a human to run pytest and paste output, which added two round trips.
+    risk: high

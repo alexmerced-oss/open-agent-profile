@@ -1,0 +1,13 @@
+# INVALID: same rule. An agent cannot rename itself or bump its own revision
+# through the operations channel.
+oap: "1.0"
+kind: AgentStateDelta
+target:
+  name: code-reviewer
+  revision: 7
+session:
+  id: sess_bad
+operations:
+  - op: replace
+    path: /metadata/description
+    value: An agent that can do absolutely anything you ask.

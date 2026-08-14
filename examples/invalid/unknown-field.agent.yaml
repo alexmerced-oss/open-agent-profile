@@ -1,0 +1,12 @@
+# INVALID: the schema is additionalProperties:false throughout. Implementation
+# specific data belongs in metadata.annotations, which round-trips by contract.
+oap: "1.0"
+kind: AgentProfile
+metadata:
+  name: sprawling
+  description: Invents a top-level field instead of using annotations.
+spec:
+  role:
+    instructions: You do things.
+  vibes:
+    intensity: high

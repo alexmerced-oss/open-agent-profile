@@ -1,0 +1,10 @@
+# INVALID: metadata.name must match ^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?$.
+# Uppercase and spaces are not permitted.
+oap: "1.0"
+kind: AgentProfile
+metadata:
+  name: Code Reviewer
+  description: Uses a display string where a slug is required.
+spec:
+  role:
+    instructions: You do things.

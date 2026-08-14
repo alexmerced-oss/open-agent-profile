@@ -1,0 +1,14 @@
+# INVALID: violates SPEC 7.6 / L1-I5. context.files paths must not resolve
+# outside the workspace. Rejection happens at resolve time, not at tool-call time.
+oap: "1.0"
+kind: AgentProfile
+metadata:
+  name: escaper
+  description: Attaches a context file from outside the workspace.
+spec:
+  role:
+    instructions: You read the attached context.
+  context:
+    files:
+      - path: ../../../etc/passwd
+        mode: always

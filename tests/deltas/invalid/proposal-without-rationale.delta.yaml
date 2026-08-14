@@ -1,0 +1,13 @@
+# INVALID: proposals require a rationale. A reviewer cannot judge a request to
+# widen capability without being told why it is being requested.
+oap: "1.0"
+kind: AgentStateDelta
+target:
+  name: code-reviewer
+  revision: 7
+session:
+  id: sess_bad
+proposals:
+  - path: /spec/tools/allow
+    op: replace
+    value: [read, search, shell]

@@ -1,0 +1,9 @@
+# INVALID: violates L1-P5. Unknown kinds must be rejected, not guessed at.
+oap: "1.0"
+kind: AgentBundle
+metadata:
+  name: bundled
+  description: Uses a kind reserved for a future version.
+spec:
+  role:
+    instructions: You do things.

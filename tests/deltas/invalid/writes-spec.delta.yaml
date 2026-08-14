@@ -1,0 +1,14 @@
+# INVALID: violates SPEC 6.4 / L2-A2. Operations may only target /state.
+# A change to the instantiation contract belongs in `proposals`, where a human
+# approves it. This is the escalation path the boundary exists to close.
+oap: "1.0"
+kind: AgentStateDelta
+target:
+  name: code-reviewer
+  revision: 7
+session:
+  id: sess_bad
+operations:
+  - op: replace
+    path: /spec/permissions/shell
+    value: allow

@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "open-agent-profile"
+version = "1.0.0"
+description = "Reference validator and applicator for the Open Agent Profile (OAP) specification"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Alex Merced" }]
+keywords = ["agent", "ai", "specification", "profile", "llm", "harness"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+  "PyYAML>=6.0",
+  "jsonschema>=4.18",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/alexmerced-oss/open-agent-profile"
+Specification = "https://github.com/alexmerced-oss/open-agent-profile/blob/main/spec/v1/SPEC.md"
+
+[project.scripts]
+oap-validate = "oap.validate:main"
+oap-apply = "oap.apply:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["oap"]
+artifacts = ["schema/**/*.json"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"schema" = "oap/schema"
+
+[tool.hatch.build.targets.sdist]
+include = ["oap", "schema", "spec", "examples", "tests", "docs", "README.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

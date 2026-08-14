@@ -1,0 +1,21 @@
+# A minimal delta: one removal, no proposals. Demonstrates that `remove` on a
+# missing path is a warning rather than an error (L2-A13).
+oap: "1.0"
+kind: AgentStateDelta
+
+target:
+  name: research-analyst
+  revision: 2
+
+session:
+  id: sess_01JDR7B
+  harness: magagent
+  ended_at: 2026-08-14T20:10:00Z
+  outcome: completed
+
+summary: Dropped a preference the user reversed.
+
+operations:
+  - op: remove
+    path: /state/preferences/id:pref-inline-citations
+    reason: User asked for a trailing bibliography instead, reversing the earlier preference.
