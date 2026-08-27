@@ -36,3 +36,10 @@ jobs:
           python skills/oap-agent-profile/scripts/oap_render.py --list examples/ > /dev/null
           python skills/oap-session-writeback/scripts/oap_delta.py examples/code-reviewer.agent.yaml \
             --session-id ci --fact "A fact learned in CI.|ci|0.5" > /dev/null
+
+      - name: Build and verify distributions
+        if: matrix.python-version == '3.12'
+        run: |
+          pip install build twine
+          python -m build
+          python -m twine check dist/*

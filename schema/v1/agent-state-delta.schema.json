@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprofile.org/schema/v1/agent-state-delta.schema.json",
+  "$id": "https://raw.githubusercontent.com/alexmerced-oss/open-agent-profile/v1.0.1/schema/v1/agent-state-delta.schema.json",
   "title": "OAP v1 Agent State Delta",
   "description": "A proposed update to an Agent Profile, emitted by an ending session and applied by the process that owns the profile file. Operations may only touch /state. Anything that would change the instantiation contract goes in proposals and is never applied automatically.",
   "type": "object",

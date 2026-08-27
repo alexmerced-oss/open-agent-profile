@@ -2,6 +2,7 @@
 
 **Status:** Draft
 **Spec version string:** `1.0`
+**Maintenance release:** `1.0.1` (normative errata; document version remains `1.0`)
 **Schemas:** [`agent-profile.schema.json`](../../schema/v1/agent-profile.schema.json), [`agent-state-delta.schema.json`](../../schema/v1/agent-state-delta.schema.json)
 
 ## 1. Introduction
@@ -60,9 +61,9 @@ Markdown encoding exists because several harnesses already store agent definitio
 
 ### 2.2 Digest
 
-The **profile digest** is `sha256:` followed by the hex SHA-256 of the canonical JSON encoding of the document, where canonical JSON means: object keys sorted lexicographically by Unicode code point, no insignificant whitespace, UTF-8, and no trailing newline. Digests are computed over the **whole document including `state` and `history`** unless a context explicitly says otherwise.
+The **profile digest** is `sha256:` followed by the lowercase hexadecimal SHA-256 of the document serialized with the JSON Canonicalization Scheme (JCS), [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785). Digests are computed over the **whole document including `state` and `history`** unless a context explicitly says otherwise. Implementations MUST reject values JCS cannot represent, including non-finite numbers. Appendix B publishes interoperability vectors.
 
-The **spec digest** is computed the same way over the two-key object `{"metadata": ..., "spec": ...}`. The spec digest is what pinning and trust decisions SHOULD use, because it does not change when an agent merely learns something.
+The **spec digest** is computed the same way over the two-key object `{"metadata": normalized_metadata, "spec": ...}`. `normalized_metadata` is `metadata` with the applicator-owned `revision` and `updated_at` fields and resolver-owned `trust` field removed. The spec digest is what pinning and trust decisions SHOULD use, because state writeback and trust assignment do not change it.
 
 ### 2.3 Top-level structure
 
@@ -89,14 +90,14 @@ An implementation that collapses this separation, for example by letting a sessi
 `oap` carries `MAJOR.MINOR`. Within major version 1:
 
 - A resolver MUST reject a document whose major version it does not implement.
-- A resolver MUST accept a document with a higher minor version than it implements, ignoring fields it does not recognize, and SHOULD emit a warning naming them.
+- A resolver MUST reject a document with a higher minor version than it implements unless it also implements that minor version's complete normative schema and behavior. A resolver MUST NOT claim forward compatibility by discarding fields whose semantics it does not know.
 - New minor versions MUST NOT add required fields, remove fields, or change the meaning of existing fields.
 
 `metadata.revision` is a separate, per-profile counter, unrelated to the spec version. It starts at 1 and increments by exactly 1 on every persisted write.
 
 ### 2.5 Unknown fields
 
-The schema is `additionalProperties: false` throughout. Implementation-specific data goes in `metadata.annotations`, whose keys SHOULD be namespaced with a domain-like prefix:
+The schema is `additionalProperties: false` throughout. This is deliberate fail-closed behavior and is why unsupported minor versions are rejected. Implementation-specific data goes in `metadata.annotations`, whose keys SHOULD be namespaced with a domain-like prefix:
 
 ```yaml
 metadata:
@@ -467,3 +468,15 @@ Mappings to specific harness formats are in [../../docs/interop.md](../../docs/i
 ## Appendix A: Reserved for future versions
 
 `kind: AgentProfileBundle` (multiple profiles in one document), `kind: AgentProfileIndex` (registry manifests), delta ops `move`, `copy`, and `test`, and signature envelopes for `imported` profiles. Implementations MUST reject unknown `kind` values in 1.x rather than guessing.
+
+## Appendix B: Digest interoperability vectors
+
+Implementations MUST produce the following UTF-8 JCS bytes before hashing:
+
+| Logical JSON value | Canonical bytes as UTF-8 text |
+| --- | --- |
+| `{"b":2,"a":1}` | `{"a":1,"b":2}` |
+| `{"n":1.0}` | `{"n":1}` |
+| `{"s":"é","z":-0.0}` | `{"s":"é","z":0}` |
+
+The repository conformance suite contains the authoritative executable vectors, including the resulting SHA-256 values.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openagentprofile.org/schema/v1/agent-profile.schema.json",
+  "$id": "https://raw.githubusercontent.com/alexmerced-oss/open-agent-profile/v1.0.1/schema/v1/agent-profile.schema.json",
   "title": "OAP v1 Agent Profile",
   "description": "A durable, portable description of a named agent. An Agent Profile is data, not a process: a conforming harness reads it to instantiate a fresh agent session, and may write an updated revision back when the session ends.",
   "type": "object",

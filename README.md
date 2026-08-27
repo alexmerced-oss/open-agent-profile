@@ -2,6 +2,8 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
+Specification `1.0` · maintenance release `1.0.1` · Draft
+
 [Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Examples](examples/) · [Skills](skills/)
 
 ---
@@ -111,6 +113,7 @@ oap-apply examples/code-reviewer.agent.yaml \
 | [`skills/`](skills/) | Agent Skills packages for harnesses without native OAP support |
 | [`oap/`](oap/) | Reference validator and applicator |
 | [`tests/`](tests/) | Conformance test suite |
+| [`conformance/`](conformance/) | Portable machine-readable conformance result contract |
 
 ## Conformance levels
 
@@ -137,9 +140,17 @@ Skills are what an agent knows how to do. MCP is what it can reach. Harness conf
 
 See [docs/interop.md](docs/interop.md) for field mappings.
 
+## Known implementations
+
+- [Loro](https://github.com/alexmerced-oss/loro) publishes an OAP conformance statement and implements governed profile discovery, narrowing, state, and Agentic Graph integration.
+- [MagAgent](https://github.com/AlexMercedCoder/MagAgent) implements OAP profile authoring, Level 3 composition and runtime integration.
+- [Merced-AI](https://github.com/AlexMercedCoder/merced-ai) implements portable named profiles and is tracked as an integration candidate; see the repository implementation report before relying on a conformance level.
+
+Implementation listings are evidence records, not endorsements. Conformance claims must link to a machine-readable result produced against a named OAP maintenance release.
+
 ## Status
 
-Draft, version 1.0. The format is stable enough to build against; the schemas and conformance requirements are versioned and will not change incompatibly within 1.x.
+Draft specification 1.0, maintenance release 1.0.1. The document format remains `oap: "1.0"`. Maintenance releases fix defects without changing that string; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
 
 Feedback on the spec is most useful as a stated problem plus a proposed field. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

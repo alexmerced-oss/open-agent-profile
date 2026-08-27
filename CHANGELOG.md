@@ -4,6 +4,17 @@ All notable changes to the Open Agent Profile specification and reference tools.
 
 The specification and the reference implementation share a version number at 1.0. If they diverge later, the specification version in the `oap` field is the one that matters for conformance.
 
+## [1.0.1] - 2026-08-27
+
+Normative errata and standards-hardening release. The document version remains `oap: "1.0"`.
+
+- Replaced the incomplete bespoke digest algorithm with RFC 8785 JCS and added interoperability vectors.
+- Defined spec-digest metadata normalization so revision, update timestamp, and resolver-assigned trust do not invalidate pins after state-only writeback.
+- Corrected YAML parsing to the YAML 1.2 boolean rules.
+- Resolved the closed-schema/forward-minor contradiction by requiring unsupported minor versions to fail closed.
+- Added governance, security reporting, versioning, implementation-report, and portable conformance-result documentation.
+- Documented Loro, MagAgent, and Merced-AI as implementation references without treating listings as conformance endorsements.
+
 ## [1.0.0] - 2026-08-14
 
 Initial draft.

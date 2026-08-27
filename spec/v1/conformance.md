@@ -33,7 +33,7 @@ An implementation MUST publish a conformance statement naming its level, the enc
 - **L1-P1** MUST accept at least one of the three encodings and MUST document which.
 - **L1-P2** MUST validate every loaded document against `agent-profile.schema.json` and MUST refuse to instantiate an invalid document.
 - **L1-P3** MUST reject a document whose `oap` major version it does not implement.
-- **L1-P4** MUST accept a higher minor version, ignoring unrecognized fields, and SHOULD warn naming them.
+- **L1-P4** MUST reject a higher minor version unless the implementation supports that version's complete normative schema and behavior.
 - **L1-P5** MUST reject unknown `kind` values.
 - **L1-P6** MUST report validation errors with a JSON Pointer to the offending location.
 
@@ -62,7 +62,7 @@ An implementation MUST publish a conformance statement naming its level, the enc
 ### 2.4 Round-tripping
 
 - **L1-R1** MUST preserve `metadata.annotations` it does not understand across any read/write cycle.
-- **L1-R2** MUST preserve unrecognized fields from higher minor versions across any read/write cycle.
+- **L1-R2** MUST preserve all `metadata.annotations` values, including nested JSON values, across any read/write cycle.
 
 ## 3. Level 2: Read/Write
 
@@ -156,3 +156,7 @@ Structural validation is necessary but not sufficient. An implementation claimin
 ### 5.3 Reference validator
 
 The `oap-validate` command in this repository validates documents against the schemas and applies the structural rules that JSON Schema alone cannot express (literal secret detection, path traversal, pointer scope, Markdown encoding rules). It is a **necessary but not sufficient** check: it validates documents, not harness behavior. Requirements L1-I3, L2-S3, L2-A5, and L2-A7 can only be demonstrated by the implementation's own tests.
+
+### 5.4 Portable result format
+
+A conformance runner SHOULD emit `oap.conformance-result.v1` JSON. The schema and a reference result are under `conformance/`. A result names the implementation and version, requested level, passed and failed requirement identifiers, fixture source revision, and timestamp. A level claim is valid only when `failed` is empty and every REQUIRED identifier for that level and lower levels appears in `passed`.

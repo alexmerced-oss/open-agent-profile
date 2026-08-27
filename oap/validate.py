@@ -35,6 +35,11 @@ except ImportError:  # pragma: no cover
     sys.exit("oap_validate requires PyYAML: pip install pyyaml")
 
 try:
+    import rfc8785
+except ImportError:  # pragma: no cover
+    sys.exit("oap_validate requires rfc8785: pip install rfc8785")
+
+try:
     from jsonschema import Draft202012Validator
 except ImportError:  # pragma: no cover
     sys.exit("oap_validate requires jsonschema: pip install jsonschema")
@@ -89,6 +94,11 @@ OAPLoader.yaml_implicit_resolvers = {
     key: [(tag, regexp) for tag, regexp in resolvers if tag != "tag:yaml.org,2002:timestamp"]
     for key, resolvers in yaml.SafeLoader.yaml_implicit_resolvers.items()
 }
+
+# PyYAML still ships YAML 1.1 boolean resolution (yes/no/on/off). OAP requires
+# the YAML 1.2 core schema, where only true and false are booleans.
+for _first in "yYnNoO":
+    OAPLoader.yaml_implicit_resolvers.pop(_first, None)
 
 
 def yaml_load(text: str) -> Any:
@@ -169,7 +179,8 @@ def load_document(path: Path) -> tuple[dict[str, Any], list[str]]:
 
 
 def canonical_json(value: Any) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    """Return RFC 8785 JSON Canonicalization Scheme bytes."""
+    return rfc8785.dumps(value)
 
 
 def profile_digest(doc: dict[str, Any]) -> str:
@@ -177,7 +188,10 @@ def profile_digest(doc: dict[str, Any]) -> str:
 
 
 def spec_digest(doc: dict[str, Any]) -> str:
-    subset = {"metadata": doc.get("metadata"), "spec": doc.get("spec")}
+    metadata = dict(doc.get("metadata") or {})
+    for mutable in ("revision", "updated_at", "trust"):
+        metadata.pop(mutable, None)
+    subset = {"metadata": metadata, "spec": doc.get("spec")}
     return "sha256:" + hashlib.sha256(canonical_json(subset)).hexdigest()
 
 
@@ -209,8 +223,15 @@ def check_version(doc: dict[str, Any], report: Report) -> bool:
         report.errors.append(f"oap: major version {major} is not supported by this validator (expected {SPEC_MAJOR})")
         return False
     minor = raw.split(".", 1)[1]
-    if minor.isdigit() and int(minor) > 0:
-        report.warnings.append(f"oap: minor version {raw} is newer than 1.0; unrecognized fields will be ignored")
+    if not minor.isdigit():
+        report.errors.append(f"oap: malformed minor version in {raw!r}")
+        return False
+    if int(minor) > 0:
+        report.errors.append(
+            f"oap: minor version {raw} is newer than 1.0; this validator refuses "
+            "documents whose complete semantics it cannot validate"
+        )
+        return False
     return True
 
 

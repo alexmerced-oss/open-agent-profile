@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/alexmerced-oss/open-agent-profile/v1.0.1/conformance/result.schema.json",
+  "title": "OAP Conformance Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "oap", "maintenance_release", "implementation", "implementation_version", "level", "fixture_revision", "passed", "failed", "generated_at"],
+  "properties": {
+    "schema": {"const": "oap.conformance-result.v1"},
+    "oap": {"const": "1.0"},
+    "maintenance_release": {"const": "1.0.1"},
+    "implementation": {"type": "string", "minLength": 1},
+    "implementation_version": {"type": "string", "minLength": 1},
+    "level": {"type": "integer", "minimum": 1, "maximum": 3},
+    "fixture_revision": {"type": "string", "minLength": 7},
+    "passed": {"type": "array", "items": {"type": "string", "pattern": "^L[1-3]-[A-Z][0-9]+$"}, "uniqueItems": true},
+    "failed": {"type": "array", "items": {"type": "string", "pattern": "^L[1-3]-[A-Z][0-9]+$"}, "uniqueItems": true},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "generated_at": {"type": "string", "format": "date-time"}
+  }
+}

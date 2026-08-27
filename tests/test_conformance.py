@@ -112,6 +112,9 @@ def test_spec_digest_is_stable_across_state_changes() -> None:
 
     mutated = copy.deepcopy(profile)
     mutated["state"]["facts"].append({"id": "fact-new", "text": "Something learned."})
+    mutated["metadata"]["revision"] += 1
+    mutated["metadata"]["updated_at"] = "2026-08-27T12:00:00Z"
+    mutated["metadata"]["trust"] = "project"
 
     assert spec_digest(mutated) == before_spec
     assert profile_digest(mutated) != before_profile
@@ -129,6 +132,43 @@ def test_yaml_timestamps_stay_strings() -> None:
     profile = load_profile("code-reviewer.agent.yaml")
     assert isinstance(profile["metadata"]["updated_at"], str)
     json.dumps(profile)  # would raise on a datetime
+
+
+def test_yaml_uses_1_2_boolean_rules(tmp_path: Path) -> None:
+    """YAML 1.2 treats yes/no/on/off as strings, unlike YAML 1.1."""
+    path = tmp_path / "yaml12.agent.yaml"
+    path.write_text(
+        "oap: '1.0'\nkind: AgentProfile\nmetadata:\n  name: yaml12\n"
+        "  description: Verifies YAML 1.2 scalar parsing.\nspec:\n  role:\n"
+        "    instructions: yes\n",
+        encoding="utf-8",
+    )
+    doc, _ = load_document(path)
+    assert doc["spec"]["role"]["instructions"] == "yes"
+
+
+def test_unsupported_minor_fails_closed(tmp_path: Path) -> None:
+    path = tmp_path / "future.agent.json"
+    profile = load_profile("note-taker.agent.yaml")
+    profile["oap"] = "1.1"
+    path.write_text(json.dumps(profile), encoding="utf-8")
+    report = validate_file(path, PROFILE_SCHEMA, DELTA_SCHEMA)
+    assert not report.ok
+    assert any("newer than 1.0" in error for error in report.errors)
+
+
+@pytest.mark.parametrize(
+    ("value", "canonical"),
+    [
+        ({"b": 2, "a": 1}, b'{"a":1,"b":2}'),
+        ({"n": 1.0}, b'{"n":1}'),
+        ({"s": "é", "z": -0.0}, '{"s":"é","z":0}'.encode()),
+    ],
+)
+def test_rfc8785_digest_vectors(value: object, canonical: bytes) -> None:
+    from oap.validate import canonical_json
+
+    assert canonical_json(value) == canonical
 
 
 # --------------------------------------------------------------------------
