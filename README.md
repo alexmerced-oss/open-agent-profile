@@ -2,7 +2,7 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
-Specification `1.0` · maintenance release `1.0.1` · Draft
+Specification `1.0` · maintenance release `1.0.2` · Draft
 
 [Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Examples](examples/) · [Skills](skills/)
 
@@ -84,6 +84,24 @@ Three rules, and they are the reason this is safe to leave switched on.
 pip install open-agent-profile
 ```
 
+Node.js 20 or newer can use the TypeScript implementation:
+
+```bash
+npm install open-agent-profile
+npx oap-validate examples/code-reviewer.agent.yaml --digest
+```
+
+It includes all three encodings, validation, RFC 8785 digests, inheritance, policy narrowing,
+prompt rendering, and delta application. See [`typescript/`](typescript/) for the API and tests.
+
+Go 1.26 or newer can use the root Go module with the same support surface:
+
+```bash
+go get github.com/alexmerced-oss/open-agent-profile@v1.0.2
+go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.2 \
+  --digest examples/code-reviewer.agent.yaml
+```
+
 ```bash
 oap-validate examples/code-reviewer.agent.yaml --digest
 ```
@@ -114,6 +132,7 @@ oap-apply examples/code-reviewer.agent.yaml \
 | [`oap/`](oap/) | Reference validator and applicator |
 | [`tests/`](tests/) | Conformance test suite |
 | [`conformance/`](conformance/) | Portable machine-readable conformance result contract |
+| Root Go package and [`cmd/`](cmd/) | Go 1.26 support library plus `oap-validate` and `oap-apply` commands |
 
 ## Conformance levels
 
@@ -150,7 +169,7 @@ Implementation listings are evidence records, not endorsements. Conformance clai
 
 ## Status
 
-Draft specification 1.0, maintenance release 1.0.1. The document format remains `oap: "1.0"`. Maintenance releases fix defects without changing that string; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
+Draft specification 1.0, maintenance release 1.0.2. The document format remains `oap: "1.0"`. Maintenance releases fix defects without changing that string; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
 
 Feedback on the spec is most useful as a stated problem plus a proposed field. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

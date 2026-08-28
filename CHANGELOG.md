@@ -4,6 +4,22 @@ All notable changes to the Open Agent Profile specification and reference tools.
 
 The specification and the reference implementation share a version number at 1.0. If they diverge later, the specification version in the `oap` field is the one that matters for conformance.
 
+## [Unreleased]
+
+Nothing yet.
+
+## [1.0.2] - 2026-08-28
+
+- Added the `open-agent-profile` npm package under `typescript/` with YAML, JSON, and Markdown
+  parsing; schema and security validation; RFC 8785 digests; inheritance; narrowing helpers;
+  normative prompt rendering; and atomic state-delta application.
+- Added exact Python/TypeScript digest vectors, fixture-driven TypeScript tests, Node 20 CI,
+  ESM/CommonJS distribution smoke tests, and npm package verification.
+- Added the root Go module plus `oap-validate` and `oap-apply` commands with Go 1.26 support,
+  all three encodings, schema and security validation, RFC 8785 digests, inheritance, policy
+  narrowing, prompt rendering, atomic delta application, Python-compatible retention, race-tested
+  conformance coverage, and Go vulnerability scanning.
+
 ## [1.0.1] - 2026-08-27
 
 Normative errata and standards-hardening release. The document version remains `oap: "1.0"`.

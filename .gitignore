@@ -9,3 +9,7 @@ dist/
 .venv/
 venv/
 .coverage
+typescript/node_modules/
+typescript/dist/
+/oap-validate
+/oap-apply
