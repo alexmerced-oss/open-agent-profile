@@ -6,7 +6,11 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
-Nothing yet.
+- Added a Rust 1.85+ support crate with all three encodings, schema and security validation,
+  RFC 8785 digests, inheritance, policy narrowing, prompt rendering, atomic delta application,
+  Python-compatible retention, safe persistence, and `oap-validate`/`oap-apply` CLIs.
+- Added shared-corpus Rust tests, strict Clippy and rustdoc gates, MSRV verification, package
+  verification, and dependency vulnerability auditing.
 
 ## [1.0.2] - 2026-08-28
 

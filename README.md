@@ -102,6 +102,16 @@ go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.2 \
   --digest examples/code-reviewer.agent.yaml
 ```
 
+Rust users get the same support surface with an MSRV of Rust 1.85:
+
+```bash
+cargo add open-agent-profile@1.0.3
+cargo install open-agent-profile --version 1.0.3
+oap-validate --digest examples/code-reviewer.agent.yaml
+```
+
+See [`rust/`](rust/) for the library API, both CLIs, and cross-language conformance tests.
+
 ```bash
 oap-validate examples/code-reviewer.agent.yaml --digest
 ```
@@ -133,6 +143,7 @@ oap-apply examples/code-reviewer.agent.yaml \
 | [`tests/`](tests/) | Conformance test suite |
 | [`conformance/`](conformance/) | Portable machine-readable conformance result contract |
 | Root Go package and [`cmd/`](cmd/) | Go 1.26 support library plus `oap-validate` and `oap-apply` commands |
+| [`rust/`](rust/) | Rust 1.85+ support crate plus `oap-validate` and `oap-apply` commands |
 
 ## Conformance levels
 

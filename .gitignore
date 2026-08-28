@@ -13,3 +13,4 @@ typescript/node_modules/
 typescript/dist/
 /oap-validate
 /oap-apply
+/rust/target/

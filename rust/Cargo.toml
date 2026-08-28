@@ -1,0 +1,40 @@
+[package]
+name = "open-agent-profile"
+version = "1.0.3"
+edition = "2024"
+rust-version = "1.85"
+description = "Rust support library for Open Agent Profile 1.0"
+license = "Apache-2.0"
+repository = "https://github.com/alexmerced-oss/open-agent-profile"
+homepage = "https://github.com/alexmerced-oss/open-agent-profile"
+documentation = "https://docs.rs/open-agent-profile"
+readme = "README.md"
+keywords = ["agents", "profile", "ai", "specification"]
+categories = ["config", "data-structures"]
+include = ["src/**", "schema/**", "Cargo.toml", "README.md", "LICENSE"]
+
+[lib]
+name = "open_agent_profile"
+
+[[bin]]
+name = "oap-validate"
+path = "src/bin/oap-validate.rs"
+
+[[bin]]
+name = "oap-apply"
+path = "src/bin/oap-apply.rs"
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+clap = { version = "4.6.6", features = ["derive"] }
+jsonschema = { version = "0.52.0", default-features = false }
+regex = "1.12"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_jcs = "0.2.0"
+serde_yaml_ng = "0.10.0"
+sha2 = "0.10"
+thiserror = "2.0"
+
+[dev-dependencies]
+tempfile = "3"

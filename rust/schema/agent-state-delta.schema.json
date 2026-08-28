@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/alexmerced-oss/open-agent-profile/v1.0.1/schema/v1/agent-state-delta.schema.json",
+  "title": "OAP v1 Agent State Delta",
+  "description": "A proposed update to an Agent Profile, emitted by an ending session and applied by the process that owns the profile file. Operations may only touch /state. Anything that would change the instantiation contract goes in proposals and is never applied automatically.",
+  "type": "object",
+  "required": ["oap", "kind", "target", "session"],
+  "additionalProperties": false,
+  "properties": {
+    "oap": { "type": "string", "pattern": "^1\\.[0-9]+$" },
+    "kind": { "const": "AgentStateDelta" },
+    "target": {
+      "type": "object",
+      "required": ["name", "revision"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?$"
+        },
+        "id": { "type": "string", "maxLength": 200 },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Revision the session was instantiated from. Applying against a different revision is a conflict."
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "Digest of the profile as loaded. Applicators SHOULD verify it."
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "maxLength": 200 },
+        "harness": { "type": "string", "maxLength": 120 },
+        "harness_version": { "type": "string", "maxLength": 60 },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "model_used": { "type": "string", "maxLength": 200 },
+        "turns": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 },
+        "outcome": { "enum": ["completed", "aborted", "error", "timeout"] }
+      }
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 4000,
+      "description": "Human-readable account of what changed and why. Shown in review UIs."
+    },
+    "operations": {
+      "type": "array",
+      "maxItems": 500,
+      "description": "State mutations. Applied in order, atomically: all succeed or none do.",
+      "items": { "$ref": "#/$defs/operation" }
+    },
+    "proposals": {
+      "type": "array",
+      "maxItems": 100,
+      "description": "Requested changes to /metadata or /spec. Advisory only. A conforming applicator MUST NOT apply these without explicit human approval, regardless of lifecycle.writeback.",
+      "items": { "$ref": "#/$defs/proposal" }
+    }
+  },
+
+  "$defs": {
+    "statePointer": {
+      "type": "string",
+      "pattern": "^/state(/.*)?$",
+      "maxLength": 500,
+      "description": "RFC 6901 JSON Pointer rooted at /state. Array append uses the '-' token, e.g. /state/facts/-."
+    },
+    "operation": {
+      "type": "object",
+      "required": ["op", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "enum": ["add", "replace", "remove"],
+          "description": "RFC 6902 subset. move, copy, and test are reserved for a future version."
+        },
+        "path": { "$ref": "#/$defs/statePointer" },
+        "value": {
+          "description": "Required for add and replace, forbidden for remove."
+        },
+        "reason": { "type": "string", "maxLength": 1000 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "enum": ["add", "replace"] } }, "required": ["op"] },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "remove" } }, "required": ["op"] },
+          "then": { "not": { "required": ["value"] } }
+        }
+      ]
+    },
+    "proposal": {
+      "type": "object",
+      "required": ["path", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/(metadata|spec)(/.*)?$",
+          "maxLength": 500
+        },
+        "op": { "enum": ["add", "replace", "remove"], "default": "replace" },
+        "value": {},
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Why the agent believes its own contract should change. Required so a reviewer can judge it."
+        },
+        "risk": {
+          "enum": ["low", "medium", "high"],
+          "description": "Applicators SHOULD compute this themselves. Any proposal that widens tools, permissions, or memory scope is high regardless of what the document claims."
+        }
+      }
+    }
+  }
+}
