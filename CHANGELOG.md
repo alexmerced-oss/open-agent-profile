@@ -6,14 +6,12 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
-- Added an opt-in Maven Central release profile with GPG signing and documented
-  maintainer commands for validating and deploying signed Java artifacts.
-
 ## [1.0.3] - 2026-08-28
 
 - Added a Java 17 support library with all encodings, schema and security validation, RFC 8785
   digests, verified inheritance, narrowing, rendering, atomic deltas, retention, and both CLIs.
 - Added shared-corpus Java tests, compiler linting, Javadocs, SpotBugs, and Maven package checks.
+- Published the signed Java artifacts to Maven Central and added an opt-in release profile.
 
 - Added a Rust 1.85+ support crate with all three encodings, schema and security validation,
   RFC 8785 digests, inheritance, policy narrowing, prompt rendering, atomic delta application,

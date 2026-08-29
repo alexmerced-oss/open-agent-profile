@@ -6,6 +6,8 @@ Markdown parsing; schema, semantic, and security validation; RFC 8785 identities
 verified inheritance; policy narrowing; normative prompt rendering; conflict-safe
 state deltas and retention; atomic persistence; and validation/application CLIs.
 
+Version 1.0.3 is available from [Maven Central](https://central.sonatype.com/artifact/io.github.alexmercedcoder/open-agent-profile/1.0.3).
+
 ```xml
 <dependency>
   <groupId>io.github.alexmercedcoder</groupId>

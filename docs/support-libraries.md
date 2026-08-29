@@ -71,9 +71,9 @@ delta, retention, and persistence surface. See the [Rust README](../rust/README.
 </dependency>
 ```
 
+Version 1.0.3 is published on [Maven Central](https://central.sonatype.com/artifact/io.github.alexmercedcoder/open-agent-profile/1.0.3).
 The Java source builds a library JAR, source and Javadoc JARs, and an executable
 CLI JAR with `validate` and `apply` commands. See the [Java README](../java/README.md).
-Maven Central publication is pending initial namespace and signing setup.
 
 ## Safety and conformance
 

@@ -97,8 +97,8 @@ prompt rendering, and delta application. See [`typescript/`](typescript/) for th
 Go 1.26 or newer can use the root Go module with the same support surface:
 
 ```bash
-go get github.com/alexmerced-oss/open-agent-profile@v1.0.2
-go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.2 \
+go get github.com/alexmerced-oss/open-agent-profile@v1.0.3
+go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.3 \
   --digest examples/code-reviewer.agent.yaml
 ```
 
