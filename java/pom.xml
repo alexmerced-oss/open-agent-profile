@@ -12,11 +12,11 @@
   <url>https://github.com/alexmerced-oss/open-agent-profile</url>
 
   <licenses><license><name>Apache License, Version 2.0</name><url>https://www.apache.org/licenses/LICENSE-2.0.txt</url><distribution>repo</distribution></license></licenses>
-  <developers><developer><name>Alex Merced</name><url>https://github.com/AlexMercedCoder</url></developer></developers>
+  <developers><developer><name>Alex Merced</name><email>coder@alexmerced.com</email><url>https://github.com/AlexMercedCoder</url></developer></developers>
   <scm>
     <connection>scm:git:https://github.com/alexmerced-oss/open-agent-profile.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/alexmerced-oss/open-agent-profile.git</developerConnection>
-    <url>https://github.com/alexmerced-oss/open-agent-profile</url><tag>HEAD</tag>
+    <url>https://github.com/alexmerced-oss/open-agent-profile</url><tag>v1.0.3</tag>
   </scm>
 
   <properties>
@@ -50,4 +50,22 @@
     </configuration></execution></executions></plugin>
     <plugin><groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId><version>4.9.4.0</version><configuration><excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile></configuration><executions><execution><phase>verify</phase><goals><goal>check</goal></goals></execution></executions></plugin>
   </plugins></build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build><plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId><artifactId>maven-gpg-plugin</artifactId><version>3.2.8</version>
+          <executions><execution><id>sign-artifacts</id><phase>verify</phase><goals><goal>sign</goal></goals></execution></executions>
+          <configuration><bestPractices>true</bestPractices><keyname>2B439B66039FBC935D9DDFA3F6335E4C4C5755B2</keyname></configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.central</groupId><artifactId>central-publishing-maven-plugin</artifactId><version>0.9.0</version>
+          <extensions>true</extensions>
+          <configuration><publishingServerId>central</publishingServerId><autoPublish>false</autoPublish></configuration>
+        </plugin>
+      </plugins></build>
+    </profile>
+  </profiles>
 </project>

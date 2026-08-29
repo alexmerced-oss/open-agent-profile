@@ -31,3 +31,8 @@ java -jar target/open-agent-profile-1.0.3-cli.jar apply ../examples/code-reviewe
 
 Delta operations can only alter `/state`; contract-changing proposals are always
 returned for human review and never applied automatically.
+
+Maintainers can produce the complete Maven Central artifact set and GPG
+signatures with `mvn -Prelease clean verify`. Publishing additionally requires
+a Central Portal user token under server ID `central` in `~/.m2/settings.xml`;
+use `mvn -Prelease clean deploy` to upload a manually reviewed deployment.
