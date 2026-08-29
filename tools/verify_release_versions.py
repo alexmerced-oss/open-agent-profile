@@ -6,12 +6,10 @@ from __future__ import annotations
 import json
 import re
 import sys
-import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
 
 
 def extracted(path: str, pattern: str) -> str:
@@ -21,18 +19,20 @@ def extracted(path: str, pattern: str) -> str:
     return match.group(1)
 
 
+EXPECTED = extracted("pyproject.toml", r'(?m)^version\s*=\s*"([^"]+)"')
+
+
 def main() -> int:
     namespace = {"m": "http://maven.apache.org/POM/4.0.0"}
     pom = ET.parse(ROOT / "java" / "pom.xml").getroot()
-    cargo_lock = tomllib.loads((ROOT / "rust/Cargo.lock").read_text(encoding="utf-8"))
-    cargo_locked = next(item["version"] for item in cargo_lock["package"] if item["name"] == "open-agent-profile")
+    cargo_locked = extracted("rust/Cargo.lock", r'(?ms)^name = "open-agent-profile"\nversion = "([^"]+)"')
     package_lock = json.loads((ROOT / "typescript/package-lock.json").read_text(encoding="utf-8"))
     versions = {
         "TypeScript package": json.loads((ROOT / "typescript/package.json").read_text())["version"],
         "TypeScript lock": package_lock["packages"][""]["version"],
         "TypeScript export": extracted("typescript/src/index.ts", r'SUPPORT_VERSION\s*=\s*"([^"]+)"'),
         "Go export": extracted("oap.go", r'SupportVersion\s*=\s*"([^"]+)"'),
-        "Rust package": tomllib.loads((ROOT / "rust/Cargo.toml").read_text())["package"]["version"],
+        "Rust package": extracted("rust/Cargo.toml", r'(?m)^version\s*=\s*"([^"]+)"'),
         "Rust lock": cargo_locked,
         "Rust export": extracted("rust/src/lib.rs", r'SUPPORT_VERSION:\s*&str\s*=\s*"([^"]+)"'),
         "Java package": pom.findtext("m:version", namespaces=namespace) or "",
