@@ -21,6 +21,12 @@ jobs:
       - name: Conformance suite
         run: pytest -q
 
+      - name: Verify published conformance evidence
+        run: python tools/verify_conformance_results.py
+
+      - name: Verify support-library release versions
+        run: python tools/verify_release_versions.py
+
       - name: Valid fixtures validate with no warnings
         run: oap-validate examples/*.agent.* examples/json tests/deltas/*.delta.yaml --strict
 

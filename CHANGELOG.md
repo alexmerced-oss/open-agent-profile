@@ -6,6 +6,13 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-08-29
+
+- Aligned Python, TypeScript, Rust, and Java package metadata for a coordinated 1.0.4 release; the normative OAP maintenance baseline remains 1.0.1.
+- Added CI-verified machine-readable conformance results for Loro, MagAgent, and Merced-AI, including complete required-ID checks for every claimed level.
+- Documented the distinction between self-declared ecosystem evidence and independent certification.
+- Added a release checklist and internal security review for the coordinated support-library release.
+
 ## [1.0.3] - 2026-08-28
 
 - Added a Java 17 support library with all encodings, schema and security validation, RFC 8785

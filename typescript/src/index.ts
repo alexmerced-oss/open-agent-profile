@@ -1,5 +1,5 @@
 export const OAP_VERSION = "1.0";
-export const SUPPORT_VERSION = "1.0.1";
+export const SUPPORT_VERSION = "1.0.4";
 
 export { canonicalJson, profileDigest, profileDigests, specDigest } from "./canonical.js";
 export {

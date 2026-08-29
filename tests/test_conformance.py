@@ -126,6 +126,21 @@ def test_digest_is_key_order_independent() -> None:
     assert profile_digest(reordered) == profile_digest(profile)
 
 
+def test_digests_are_recursively_key_order_independent() -> None:
+    def reverse_objects(value: object) -> object:
+        if isinstance(value, dict):
+            return {key: reverse_objects(child) for key, child in reversed(list(value.items()))}
+        if isinstance(value, list):
+            return [reverse_objects(child) for child in value]
+        return value
+
+    for name in ("note-taker.agent.yaml", "code-reviewer.agent.yaml", "data-engineer.agent.yaml"):
+        profile = load_profile(name)
+        reordered = reverse_objects(profile)
+        assert profile_digest(reordered) == profile_digest(profile)
+        assert spec_digest(reordered) == spec_digest(profile)
+
+
 def test_yaml_timestamps_stay_strings() -> None:
     """YAML 1.1 implicit typing would turn these into datetimes, which breaks
     both format validation and canonical-JSON digests."""
@@ -206,6 +221,23 @@ def test_delta_cannot_write_outside_state() -> None:
         "target": {"name": "code-reviewer", "revision": 7},
         "session": {"id": "sess_test"},
         "operations": [{"op": "replace", "path": "/spec/permissions/shell", "value": "allow"}],
+    }
+    with pytest.raises(ApplyError, match="outside /state"):
+        apply_delta(profile, delta, approved=True)
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["/spec/permissions/shell", "/metadata/revision", "/history/-", "/oap", "/stateful/lookalike", "/"],
+)
+def test_delta_authority_boundary_rejects_every_non_state_root(path: str) -> None:
+    profile = load_profile("code-reviewer.agent.yaml")
+    delta = {
+        "oap": "1.0",
+        "kind": "AgentStateDelta",
+        "target": {"name": "code-reviewer", "revision": 7},
+        "session": {"id": "sess_boundary"},
+        "operations": [{"op": "add", "path": path, "value": "attacker-controlled"}],
     }
     with pytest.raises(ApplyError, match="outside /state"):
         apply_delta(profile, delta, approved=True)

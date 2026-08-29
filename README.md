@@ -2,7 +2,9 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
-Specification `1.0` · maintenance release `1.0.3` · Draft
+Specification `1.0` · normative maintenance `1.0.1` · support-library release candidate `1.0.4` · Draft
+
+Release preparation: [1.0.4 checklist](docs/release-1.0.4.md) · [internal security review](docs/security-review-1.0.4.md)
 
 [Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Support libraries](docs/support-libraries.md) · [Examples](examples/) · [Skills](skills/)
 
@@ -193,7 +195,7 @@ Implementation listings are evidence records, not endorsements. Conformance clai
 
 ## Status
 
-Draft specification 1.0, maintenance release 1.0.2. The document format remains `oap: "1.0"`. Maintenance releases fix defects without changing that string; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
+Draft specification 1.0, normative maintenance release 1.0.1. The document format remains `oap: "1.0"`. Support-library releases are versioned separately; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
 
 Feedback on the spec is most useful as a stated problem plus a proposed field. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

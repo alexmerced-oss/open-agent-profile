@@ -6,7 +6,7 @@
 
   <groupId>io.github.alexmercedcoder</groupId>
   <artifactId>open-agent-profile</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <name>Open Agent Profile Java Support</name>
   <description>Java support library and command-line tools for Open Agent Profile 1.0</description>
   <url>https://github.com/alexmerced-oss/open-agent-profile</url>
@@ -16,7 +16,7 @@
   <scm>
     <connection>scm:git:https://github.com/alexmerced-oss/open-agent-profile.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/alexmerced-oss/open-agent-profile.git</developerConnection>
-    <url>https://github.com/alexmerced-oss/open-agent-profile</url><tag>v1.0.3</tag>
+    <url>https://github.com/alexmerced-oss/open-agent-profile</url><tag>v1.0.4</tag>
   </scm>
 
   <properties>

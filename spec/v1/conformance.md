@@ -2,6 +2,8 @@
 
 This document defines what an implementation must do to claim a conformance level, and how to demonstrate it. It is normative.
 
+Machine-readable implementation evidence and its verifier are documented in [`conformance/README.md`](../../conformance/README.md).
+
 ## 1. Levels
 
 | Level | Name | Summary |

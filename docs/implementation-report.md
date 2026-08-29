@@ -4,9 +4,11 @@ This report tracks public implementation evidence for OAP 1.0 maintenance releas
 
 | Implementation | Repository | Observed surface | Verified status |
 | --- | --- | --- | --- |
-| Loro | https://github.com/alexmerced-oss/loro | Discovery, effective-policy narrowing, prompt rendering, state and deltas, inheritance, Agentic Graph integration | Existing self-declared Level 3 statement; rerun required against 1.0.1 |
-| MagAgent | https://github.com/AlexMercedCoder/MagAgent | Profile authoring, discovery, narrowing, deltas, inheritance, skills, MCP and delegation integration | Existing self-declared Level 3 checks; rerun required against 1.0.1 |
-| Merced-AI | https://github.com/AlexMercedCoder/merced-ai | Named profile and session management | No OAP conformance level verified |
+| Loro | https://github.com/alexmerced-oss/loro | Discovery, effective-policy narrowing, prompt rendering, state and deltas, inheritance, Agentic Graph integration | Self-declared Level 3 result, schema and required-ID surface verified at fixture revision `7fb633a` |
+| MagAgent | https://github.com/AlexMercedCoder/MagAgent | Profile authoring, discovery, narrowing, deltas, inheritance, skills, MCP and delegation integration | Self-declared Level 3 result, schema and required-ID surface verified at fixture revision `7fb633a` |
+| Merced-AI | https://github.com/AlexMercedCoder/merced-ai | Named profile and session management | Self-declared Level 1 result, schema and required-ID surface verified at fixture revision `7fb633a` |
+
+The checked-in records are in [`conformance/results/`](../conformance/results/) and are verified in CI by `tools/verify_conformance_results.py`. They are self-declared evidence, not independent certification. Each record remains tied to its named fixture commit until that implementation publishes a rerun.
 
 The standards repository does not certify implementations. It records reproducible evidence and unresolved deviations. Independent implementation review remains required before OAP advances beyond Draft.
 

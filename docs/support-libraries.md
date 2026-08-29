@@ -4,6 +4,8 @@ The repository contains support implementations for Python, TypeScript, Go,
 Rust, and Java. They share the OAP 1.0 schemas, security invariants, RFC 8785
 identity rules, and portable conformance fixtures.
 
+Repository sources are prepared as release candidate 1.0.4. Install examples below intentionally remain on the latest published package for their registry until the coordinated release completes. See the [1.0.4 release checklist](release-1.0.4.md) and [internal security review](security-review-1.0.4.md).
+
 | Language | Runtime | Package or module | Documentation |
 | --- | --- | --- | --- |
 | Python | 3.10+ | `open-agent-profile` | This guide plus `oap.validate` and `oap.apply` |
