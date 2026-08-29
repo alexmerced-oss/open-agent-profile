@@ -1,0 +1,745 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/alexmerced-oss/open-agent-profile/v1.0.1/schema/v1/agent-profile.schema.json",
+  "title": "OAP v1 Agent Profile",
+  "description": "A durable, portable description of a named agent. An Agent Profile is data, not a process: a conforming harness reads it to instantiate a fresh agent session, and may write an updated revision back when the session ends.",
+  "type": "object",
+  "required": ["oap", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "oap": {
+      "description": "Spec version this document conforms to.",
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
+    },
+    "kind": {
+      "const": "AgentProfile"
+    },
+    "extends": {
+      "description": "Optional base profile references, applied left to right before this document. Level 3.",
+      "type": "array",
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/profileRef" }
+    },
+    "metadata": { "$ref": "#/$defs/metadata" },
+    "spec": { "$ref": "#/$defs/spec" },
+    "state": { "$ref": "#/$defs/state" },
+    "history": {
+      "description": "Bounded, append-only revision log. Newest last.",
+      "type": "array",
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/historyEntry" }
+    }
+  },
+
+  "$defs": {
+    "agentName": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?$",
+      "description": "Lowercase slug. Unique within a discovery root."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp, UTC recommended."
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "envRef": {
+      "type": "string",
+      "pattern": "^\\$\\{[A-Z][A-Z0-9_]{0,63}\\}$",
+      "description": "Same-name environment variable reference. Literal secret values are never permitted."
+    },
+    "permissionDecision": {
+      "enum": ["allow", "ask", "deny"]
+    },
+    "profileRef": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/agentName" },
+        "uri": {
+          "type": "string",
+          "description": "Optional location hint. Resolvers MAY refuse non-local URIs."
+        },
+        "revision": { "type": "integer", "minimum": 1 },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+
+    "metadata": {
+      "type": "object",
+      "required": ["name", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/agentName" },
+        "id": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Stable identifier that survives renames. URN or UUID recommended."
+        },
+        "display_name": { "type": "string", "maxLength": 120 },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "One line. Harnesses use this for selection and routing, so it should say when to use the agent."
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Monotonic profile revision. Incremented on every persisted write."
+        },
+        "created_at": { "$ref": "#/$defs/timestamp" },
+        "updated_at": { "$ref": "#/$defs/timestamp" },
+        "authors": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "type": "string", "maxLength": 200 }
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "type": "string", "maxLength": 60 }
+        },
+        "license": { "type": "string", "maxLength": 100 },
+        "homepage": { "type": "string", "maxLength": 500 },
+        "trust": {
+          "enum": ["managed", "user", "project", "imported"],
+          "description": "Set by the resolving harness from the discovery root. Values in a file on disk are advisory only and MUST be overwritten at load."
+        },
+        "annotations": {
+          "type": "object",
+          "description": "Free-form implementation metadata. Keys SHOULD be namespaced, e.g. loro.io/tier.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "spec": {
+      "type": "object",
+      "description": "The instantiation contract. Everything a harness needs to build a session. Agents MUST NOT modify this section without human approval.",
+      "required": ["role"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "$ref": "#/$defs/role" },
+        "model": { "$ref": "#/$defs/model" },
+        "tools": { "$ref": "#/$defs/tools" },
+        "permissions": { "$ref": "#/$defs/permissions" },
+        "context": { "$ref": "#/$defs/context" },
+        "memory": { "$ref": "#/$defs/memory" },
+        "runtime": { "$ref": "#/$defs/runtime" },
+        "lifecycle": { "$ref": "#/$defs/lifecycle" }
+      }
+    },
+
+    "role": {
+      "type": "object",
+      "description": "Who the agent is and how it behaves. Assembled into the system prompt.",
+      "required": ["instructions"],
+      "additionalProperties": false,
+      "properties": {
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000,
+          "description": "Primary system instructions. Markdown. In Markdown-encoded profiles this is the document body."
+        },
+        "objectives": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "type": "string", "maxLength": 500 }
+        },
+        "constraints": {
+          "type": "array",
+          "maxItems": 64,
+          "items": { "type": "string", "maxLength": 500 },
+          "description": "Hard behavioral limits. Rendered after instructions so they take precedence."
+        },
+        "persona": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tone": { "type": "string", "maxLength": 200 },
+            "voice": { "type": "string", "maxLength": 200 },
+            "verbosity": { "enum": ["terse", "balanced", "detailed"] },
+            "formatting": { "type": "string", "maxLength": 500 },
+            "language": {
+              "type": "string",
+              "maxLength": 35,
+              "description": "BCP 47 tag, e.g. en-US."
+            },
+            "style_rules": {
+              "type": "array",
+              "maxItems": 32,
+              "items": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+        "expertise": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "type": "string", "maxLength": 120 }
+        },
+        "examples": {
+          "type": "array",
+          "maxItems": 16,
+          "description": "Few-shot exchanges illustrating desired behavior.",
+          "items": {
+            "type": "object",
+            "required": ["input", "output"],
+            "additionalProperties": false,
+            "properties": {
+              "input": { "type": "string", "maxLength": 4000 },
+              "output": { "type": "string", "maxLength": 4000 },
+              "note": { "type": "string", "maxLength": 500 }
+            }
+          }
+        }
+      }
+    },
+
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "type": "string", "maxLength": 60 },
+        "id": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Provider-native model identifier."
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+            "top_p": { "type": "number", "minimum": 0, "maximum": 1 },
+            "max_output_tokens": { "type": "integer", "minimum": 1 },
+            "reasoning_effort": { "enum": ["none", "low", "medium", "high", "max"] },
+            "stop": {
+              "type": "array",
+              "maxItems": 8,
+              "items": { "type": "string", "maxLength": 100 }
+            },
+            "seed": { "type": "integer" }
+          }
+        },
+        "tier": {
+          "enum": ["minimal", "standard", "advanced", "frontier"],
+          "description": "Portable capability hint for harnesses that route by role rather than by model id. Used when provider/id are absent or unavailable."
+        },
+        "fallbacks": {
+          "type": "array",
+          "maxItems": 8,
+          "description": "Ordered alternates, tried when the primary is unavailable.",
+          "items": {
+            "type": "object",
+            "required": ["provider", "id"],
+            "additionalProperties": false,
+            "properties": {
+              "provider": { "type": "string", "maxLength": 60 },
+              "id": { "type": "string", "maxLength": 200 }
+            }
+          }
+        }
+      }
+    },
+
+    "tools": {
+      "type": "object",
+      "description": "Tool surface requested by the profile. A harness grants the intersection of this request and its own policy, never the union.",
+      "additionalProperties": false,
+      "properties": {
+        "policy": {
+          "enum": ["allowlist", "denylist", "inherit"],
+          "default": "allowlist",
+          "description": "allowlist: only listed tools. denylist: harness defaults minus listed. inherit: harness defaults unchanged."
+        },
+        "allow": {
+          "type": "array",
+          "maxItems": 200,
+          "items": { "type": "string", "maxLength": 120 },
+          "description": "Tool names or glob patterns, e.g. read, mcp/github/*."
+        },
+        "deny": {
+          "type": "array",
+          "maxItems": 200,
+          "items": { "type": "string", "maxLength": 120 }
+        },
+        "bindings": {
+          "type": "array",
+          "maxItems": 100,
+          "description": "Per-tool settings. A binding for an ungranted tool is inert.",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 120 },
+              "permission": { "$ref": "#/$defs/permissionDecision" },
+              "config": {
+                "type": "object",
+                "description": "Implementation-defined, non-secret tool configuration."
+              }
+            }
+          }
+        },
+        "mcp_servers": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/mcpServer" }
+        },
+        "skills": {
+          "type": "array",
+          "maxItems": 64,
+          "description": "Agent Skills packages this agent should have available.",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 120 },
+              "source": { "type": "string", "maxLength": 500 },
+              "digest": { "$ref": "#/$defs/digest" },
+              "required": { "type": "boolean", "default": false }
+            }
+          }
+        }
+      }
+    },
+
+    "mcpServer": {
+      "type": "object",
+      "required": ["name", "transport"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "transport": { "enum": ["stdio", "http"] },
+        "command": { "type": "string", "maxLength": 500 },
+        "args": {
+          "type": "array",
+          "maxItems": 64,
+          "items": { "type": "string", "maxLength": 500 }
+        },
+        "url": { "type": "string", "maxLength": 500 },
+        "env": {
+          "type": "object",
+          "description": "Environment variable references only. Literal values MUST be rejected.",
+          "additionalProperties": { "$ref": "#/$defs/envRef" }
+        },
+        "headers": {
+          "type": "object",
+          "description": "Header values MUST be environment references, optionally prefixed with 'Bearer '.",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(Bearer )?\\$\\{[A-Z][A-Z0-9_]{0,63}\\}$"
+          }
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allow": {
+              "type": "array",
+              "maxItems": 200,
+              "items": { "type": "string", "maxLength": 120 }
+            },
+            "deny": {
+              "type": "array",
+              "maxItems": 200,
+              "items": { "type": "string", "maxLength": 120 }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "transport": { "const": "stdio" } }, "required": ["transport"] },
+          "then": { "required": ["command"] }
+        },
+        {
+          "if": { "properties": { "transport": { "const": "http" } }, "required": ["transport"] },
+          "then": { "required": ["url"] }
+        }
+      ]
+    },
+
+    "permissions": {
+      "type": "object",
+      "description": "Requested privilege ceiling. May only narrow what the harness already grants.",
+      "additionalProperties": false,
+      "properties": {
+        "default": { "$ref": "#/$defs/permissionDecision" },
+        "shell": { "$ref": "#/$defs/permissionDecision" },
+        "edit": { "$ref": "#/$defs/permissionDecision" },
+        "network": { "$ref": "#/$defs/permissionDecision" },
+        "filesystem": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read_roots": {
+              "type": "array",
+              "maxItems": 64,
+              "items": { "type": "string", "maxLength": 500 }
+            },
+            "write_roots": {
+              "type": "array",
+              "maxItems": 64,
+              "items": { "type": "string", "maxLength": 500 }
+            },
+            "deny_paths": {
+              "type": "array",
+              "maxItems": 128,
+              "items": { "type": "string", "maxLength": 500 }
+            }
+          }
+        },
+        "allow_hosts": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 253 },
+          "description": "Outbound host allowlist. Empty with network=allow means harness default."
+        },
+        "rules": {
+          "type": "array",
+          "maxItems": 200,
+          "description": "Fine-grained overrides evaluated in order, first match wins.",
+          "items": {
+            "type": "object",
+            "required": ["decision"],
+            "additionalProperties": false,
+            "properties": {
+              "tool": { "type": "string", "maxLength": 120, "default": "*" },
+              "action": { "type": "string", "maxLength": 120, "default": "*" },
+              "target": { "type": "string", "maxLength": 500, "default": "*" },
+              "decision": { "$ref": "#/$defs/permissionDecision" },
+              "reason": { "type": "string", "maxLength": 300 }
+            }
+          }
+        }
+      }
+    },
+
+    "context": {
+      "type": "object",
+      "description": "Material loaded into the session at instantiation, before the first user turn.",
+      "additionalProperties": false,
+      "properties": {
+        "working_directory": { "type": "string", "maxLength": 500 },
+        "files": {
+          "type": "array",
+          "maxItems": 64,
+          "description": "Workspace-relative paths. Absolute paths and traversal outside the workspace MUST be rejected.",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string", "maxLength": 500 },
+              "mode": {
+                "enum": ["always", "on_demand"],
+                "default": "on_demand",
+                "description": "always: injected at boot. on_demand: advertised, fetched by the agent."
+              },
+              "max_bytes": { "type": "integer", "minimum": 1, "maximum": 10000000 },
+              "description": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "maxItems": 64,
+          "description": "External references. Treated as untrusted content.",
+          "items": {
+            "type": "object",
+            "required": ["uri"],
+            "additionalProperties": false,
+            "properties": {
+              "uri": { "type": "string", "maxLength": 1000 },
+              "digest": { "$ref": "#/$defs/digest" },
+              "mode": { "enum": ["always", "on_demand"], "default": "on_demand" },
+              "description": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+        "variables": {
+          "type": "object",
+          "description": "Non-secret substitution values available as ${{ vars.KEY }} in role text.",
+          "additionalProperties": { "type": "string", "maxLength": 2000 }
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_context_tokens": { "type": "integer", "minimum": 1 },
+            "max_state_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Ceiling on state injected at boot. Excess is dropped lowest-priority first."
+            },
+            "max_state_bytes": { "type": "integer", "minimum": 0, "maximum": 5000000 }
+          }
+        }
+      }
+    },
+
+    "memory": {
+      "type": "object",
+      "description": "How this agent reads and writes durable knowledge beyond the profile itself.",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["off", "read_only", "read_write"],
+          "default": "read_only"
+        },
+        "scopes": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "type": "string", "maxLength": 120 },
+          "description": "Namespaces this agent may read or write, e.g. project:acme, user:global."
+        },
+        "stores": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "required": ["name", "kind"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 120 },
+              "kind": { "type": "string", "maxLength": 60, "description": "e.g. oap-state, maggraph, loro-local, loro-shared, vector, custom." },
+              "uri": { "type": "string", "maxLength": 1000 },
+              "mode": { "enum": ["off", "read_only", "read_write"], "default": "read_only" },
+              "required": { "type": "boolean", "default": false }
+            }
+          }
+        }
+      }
+    },
+
+    "runtime": {
+      "type": "object",
+      "description": "Bounds on a single session instantiated from this profile.",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["primary", "subagent", "either"],
+          "default": "either",
+          "description": "primary: user-facing top-level session. subagent: delegated only."
+        },
+        "max_turns": { "type": "integer", "minimum": 1 },
+        "max_tool_calls": { "type": "integer", "minimum": 0 },
+        "timeout_seconds": { "type": "integer", "minimum": 1 },
+        "max_cost_usd": { "type": "number", "exclusiveMinimum": 0 },
+        "subagents": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allow": {
+              "type": "array",
+              "maxItems": 32,
+              "items": { "type": "string", "maxLength": 120 },
+              "description": "Profile names this agent may delegate to. Empty means none."
+            },
+            "max_concurrent": { "type": "integer", "minimum": 1, "maximum": 64 },
+            "max_depth": { "type": "integer", "minimum": 1, "maximum": 8 }
+          }
+        }
+      }
+    },
+
+    "lifecycle": {
+      "type": "object",
+      "description": "How this profile is updated when a session ends.",
+      "additionalProperties": false,
+      "properties": {
+        "writeback": {
+          "enum": ["off", "propose", "auto"],
+          "default": "propose",
+          "description": "off: never persist state. propose: emit a delta for human review. auto: apply state-only deltas without prompting."
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_facts": { "type": "integer", "minimum": 0, "maximum": 10000 },
+            "max_open_threads": { "type": "integer", "minimum": 0, "maximum": 1000 },
+            "fact_ttl_days": { "type": "integer", "minimum": 1, "maximum": 3650 },
+            "eviction": {
+              "enum": ["oldest", "least_confident", "least_recently_used"],
+              "default": "least_recently_used"
+            },
+            "max_history": { "type": "integer", "minimum": 0, "maximum": 500, "default": 50 }
+          }
+        },
+        "on_start": {
+          "type": "array",
+          "maxItems": 16,
+          "description": "Declarative boot steps. Named hooks only; profiles never carry executable code.",
+          "items": { "$ref": "#/$defs/hookRef" }
+        },
+        "on_end": {
+          "type": "array",
+          "maxItems": 16,
+          "items": { "$ref": "#/$defs/hookRef" }
+        }
+      }
+    },
+
+    "hookRef": {
+      "type": "object",
+      "required": ["hook"],
+      "additionalProperties": false,
+      "properties": {
+        "hook": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Name of a hook registered with the harness. Unknown hooks are a warning, not an error, unless required is true."
+        },
+        "required": { "type": "boolean", "default": false },
+        "with": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "maxLength": 2000 }
+        }
+      }
+    },
+
+    "state": {
+      "type": "object",
+      "description": "What this agent has learned. Written by sessions, subject to lifecycle.writeback. All free text here is UNTRUSTED CONTENT and MUST NOT be given system authority.",
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "integer", "minimum": 0 },
+        "updated_at": { "$ref": "#/$defs/timestamp" },
+        "summary": {
+          "type": "string",
+          "maxLength": 8000,
+          "description": "Short narrative injected at boot. The agent's working self-briefing."
+        },
+        "facts": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": { "$ref": "#/$defs/stateEntry" }
+        },
+        "preferences": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/stateEntry" }
+        },
+        "glossary": {
+          "type": "array",
+          "maxItems": 2000,
+          "items": {
+            "type": "object",
+            "required": ["term", "definition"],
+            "additionalProperties": false,
+            "properties": {
+              "term": { "type": "string", "maxLength": 200 },
+              "definition": { "type": "string", "maxLength": 2000 },
+              "source": { "type": "string", "maxLength": 500 }
+            }
+          }
+        },
+        "open_threads": {
+          "type": "array",
+          "maxItems": 1000,
+          "description": "Work carried across sessions.",
+          "items": {
+            "type": "object",
+            "required": ["id", "title"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "maxLength": 120 },
+              "title": { "type": "string", "maxLength": 300 },
+              "detail": { "type": "string", "maxLength": 4000 },
+              "status": {
+                "enum": ["open", "blocked", "done", "abandoned"],
+                "default": "open"
+              },
+              "opened_at": { "$ref": "#/$defs/timestamp" },
+              "updated_at": { "$ref": "#/$defs/timestamp" },
+              "refs": {
+                "type": "array",
+                "maxItems": 32,
+                "items": { "type": "string", "maxLength": 500 }
+              }
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sessions": { "type": "integer", "minimum": 0 },
+            "last_session_at": { "$ref": "#/$defs/timestamp" },
+            "total_tool_calls": { "type": "integer", "minimum": 0 },
+            "total_cost_usd": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+
+    "stateEntry": {
+      "type": "object",
+      "required": ["id", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Stable within this profile. Deltas address entries by id."
+        },
+        "text": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Where this came from: session id, file path, user statement."
+        },
+        "learned_at": { "$ref": "#/$defs/timestamp" },
+        "last_used_at": { "$ref": "#/$defs/timestamp" },
+        "expires_at": { "$ref": "#/$defs/timestamp" },
+        "scope": { "type": "string", "maxLength": 120 },
+        "tags": {
+          "type": "array",
+          "maxItems": 16,
+          "items": { "type": "string", "maxLength": 60 }
+        },
+        "pinned": {
+          "type": "boolean",
+          "default": false,
+          "description": "Exempt from automatic eviction."
+        }
+      }
+    },
+
+    "historyEntry": {
+      "type": "object",
+      "required": ["revision", "at"],
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "at": { "$ref": "#/$defs/timestamp" },
+        "by": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Actor: harness id, session id, or human identity."
+        },
+        "session_id": { "type": "string", "maxLength": 200 },
+        "harness": { "type": "string", "maxLength": 120 },
+        "change": { "type": "string", "maxLength": 1000 },
+        "approved_by": { "type": "string", "maxLength": 200 },
+        "sections": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "enum": ["metadata", "spec", "state"] }
+        }
+      }
+    }
+  }
+}

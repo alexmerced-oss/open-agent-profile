@@ -2,9 +2,9 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
-Specification `1.0` · maintenance release `1.0.2` · Draft
+Specification `1.0` · maintenance release `1.0.3` · Draft
 
-[Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Examples](examples/) · [Skills](skills/)
+[Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Support libraries](docs/support-libraries.md) · [Examples](examples/) · [Skills](skills/)
 
 ---
 
@@ -112,6 +112,18 @@ oap-validate --digest examples/code-reviewer.agent.yaml
 
 See [`rust/`](rust/) for the library API, both CLIs, and cross-language conformance tests.
 
+Java 17 users can use the Maven support library and executable CLI JAR:
+
+```xml
+<dependency>
+  <groupId>io.github.alexmercedcoder</groupId>
+  <artifactId>open-agent-profile</artifactId>
+  <version>1.0.3</version>
+</dependency>
+```
+
+See [`java/`](java/) for the API, both commands, and shared-corpus conformance tests.
+
 ```bash
 oap-validate examples/code-reviewer.agent.yaml --digest
 ```
@@ -144,6 +156,7 @@ oap-apply examples/code-reviewer.agent.yaml \
 | [`conformance/`](conformance/) | Portable machine-readable conformance result contract |
 | Root Go package and [`cmd/`](cmd/) | Go 1.26 support library plus `oap-validate` and `oap-apply` commands |
 | [`rust/`](rust/) | Rust 1.85+ support crate plus `oap-validate` and `oap-apply` commands |
+| [`java/`](java/) | Java 17 support library plus validation and delta-application commands |
 
 ## Conformance levels
 

@@ -10,6 +10,7 @@ Start here, in order:
 | [State and memory](state-and-memory.md) | You are deciding what belongs in the profile versus an external store. |
 | [Interop](interop.md) | You are mapping OAP onto an existing harness format. |
 | [Implementers guide](implementers-guide.md) | You are adding OAP support to a harness. |
+| [Support libraries](support-libraries.md) | Install and use the Python, TypeScript, Go, Rust, and Java implementations. |
 | [FAQ](faq.md) | You have an objection. It is probably answered here. |
 
 The normative documents live in [`spec/v1/`](../spec/v1/):

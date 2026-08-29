@@ -6,11 +6,18 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-08-28
+
+- Added a Java 17 support library with all encodings, schema and security validation, RFC 8785
+  digests, verified inheritance, narrowing, rendering, atomic deltas, retention, and both CLIs.
+- Added shared-corpus Java tests, compiler linting, Javadocs, SpotBugs, and Maven package checks.
+
 - Added a Rust 1.85+ support crate with all three encodings, schema and security validation,
   RFC 8785 digests, inheritance, policy narrowing, prompt rendering, atomic delta application,
   Python-compatible retention, safe persistence, and `oap-validate`/`oap-apply` CLIs.
 - Added shared-corpus Rust tests, strict Clippy and rustdoc gates, MSRV verification, package
   verification, and dependency vulnerability auditing.
+- Added a consolidated support-library guide covering Python, TypeScript, Go, Rust, and Java.
 
 ## [1.0.2] - 2026-08-28
 
