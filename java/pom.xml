@@ -61,7 +61,7 @@
           <configuration><bestPractices>true</bestPractices><keyname>2B439B66039FBC935D9DDFA3F6335E4C4C5755B2</keyname></configuration>
         </plugin>
         <plugin>
-          <groupId>org.sonatype.central</groupId><artifactId>central-publishing-maven-plugin</artifactId><version>0.9.0</version>
+          <groupId>org.sonatype.central</groupId><artifactId>central-publishing-maven-plugin</artifactId><version>0.11.0</version>
           <extensions>true</extensions>
           <configuration><publishingServerId>central</publishingServerId><autoPublish>false</autoPublish></configuration>
         </plugin>
