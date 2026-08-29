@@ -4,7 +4,7 @@ The repository contains support implementations for Python, TypeScript, Go,
 Rust, and Java. They share the OAP 1.0 schemas, security invariants, RFC 8785
 identity rules, and portable conformance fixtures.
 
-Repository sources are prepared as release candidate 1.0.4. Install examples below intentionally remain on the latest published package for their registry until the coordinated release completes. See the [1.0.4 release checklist](release-1.0.4.md) and [internal security review](security-review-1.0.4.md).
+Support-library release 1.0.4 is coordinated across all five languages. See the [release checklist](release-1.0.4.md) and [internal security review](security-review-1.0.4.md).
 
 | Language | Runtime | Package or module | Documentation |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ prompt rendering, and typed delta APIs. See its [language README](../typescript/
 ## Go
 
 ```console
-go get github.com/alexmerced-oss/open-agent-profile@v1.0.3
+go get github.com/alexmerced-oss/open-agent-profile@v1.0.4
 ```
 
 ```go
@@ -55,8 +55,8 @@ The repository also provides `cmd/oap-validate` and `cmd/oap-apply`.
 ## Rust
 
 ```console
-cargo add open-agent-profile@1.0.3
-cargo install open-agent-profile --version 1.0.3
+cargo add open-agent-profile@1.0.4
+cargo install open-agent-profile --version 1.0.4
 oap-validate --digest reviewer.agent.yaml
 ```
 
@@ -69,11 +69,11 @@ delta, retention, and persistence surface. See the [Rust README](../rust/README.
 <dependency>
   <groupId>io.github.alexmercedcoder</groupId>
   <artifactId>open-agent-profile</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
-Version 1.0.3 is published on [Maven Central](https://central.sonatype.com/artifact/io.github.alexmercedcoder/open-agent-profile/1.0.3).
+Version 1.0.4 is published on [Maven Central](https://central.sonatype.com/artifact/io.github.alexmercedcoder/open-agent-profile/1.0.4).
 The Java source builds a library JAR, source and Javadoc JARs, and an executable
 CLI JAR with `validate` and `apply` commands. See the [Java README](../java/README.md).
 

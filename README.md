@@ -2,7 +2,7 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
-Specification `1.0` · normative maintenance `1.0.1` · support-library release candidate `1.0.4` · Draft
+Specification `1.0` · normative maintenance `1.0.1` · support-library release `1.0.4` · Draft
 
 Release preparation: [1.0.4 checklist](docs/release-1.0.4.md) · [internal security review](docs/security-review-1.0.4.md)
 
@@ -99,16 +99,16 @@ prompt rendering, and delta application. See [`typescript/`](typescript/) for th
 Go 1.26 or newer can use the root Go module with the same support surface:
 
 ```bash
-go get github.com/alexmerced-oss/open-agent-profile@v1.0.3
-go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.3 \
+go get github.com/alexmerced-oss/open-agent-profile@v1.0.4
+go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.4 \
   --digest examples/code-reviewer.agent.yaml
 ```
 
 Rust users get the same support surface with an MSRV of Rust 1.85:
 
 ```bash
-cargo add open-agent-profile@1.0.3
-cargo install open-agent-profile --version 1.0.3
+cargo add open-agent-profile@1.0.4
+cargo install open-agent-profile --version 1.0.4
 oap-validate --digest examples/code-reviewer.agent.yaml
 ```
 
@@ -120,7 +120,7 @@ Java 17 users can use the Maven support library and executable CLI JAR:
 <dependency>
   <groupId>io.github.alexmercedcoder</groupId>
   <artifactId>open-agent-profile</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
