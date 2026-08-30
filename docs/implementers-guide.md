@@ -213,6 +213,20 @@ def stable_id(text: str, prefix: str = "fact") -> str:
 
 A content-derived slug means the same learned fact produces the same id twice, and `add` becomes an idempotent update. That is also what makes conflict rebasing work: `id`-addressed operations survive a rebase, index-addressed ones do not.
 
+## Prompt-driven profile authoring
+
+Natural-language profile generation is a harness feature, not a new OAP document kind. Compile a
+small, typed model response into the canonical schema, then run the exact validation, secret
+scanning, dependency resolution, authority preview, and atomic persistence boundary used for a
+hand-authored profile. Give the model a catalog of real tools, skills, MCP servers, providers, and
+parents; reject rather than silently accepting invented references.
+
+Treat intent as part of the approval boundary. An explicit user action such as **Generate profile**
+may proceed to review and save. A parent agent that independently decides it wants a new subagent
+should emit a non-authoritative proposal unless local policy explicitly permits activation. The
+portable [`oap-profile-authoring`](../skills/oap-profile-authoring/) skill defines a reusable prompt
+contract for both paths.
+
 ## Testing
 
 Port the behavioral tests from [conformance.md §5.2](../spec/v1/conformance.md#52-behavioral-tests) into your suite. `tests/test_conformance.py` here is a working reference for the Level 2 half.

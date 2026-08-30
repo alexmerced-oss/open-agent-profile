@@ -40,7 +40,7 @@ https://github.com/alexmerced-oss/open-agent-profile
 Search in precedence order, closest to the user last:
 
 ```bash
-ls ~/.config/oap/agents/*.agent.* 2>/dev/null
+ls ~/.agentprofiles/*.agent.* ~/.config/oap/agents/*.agent.* 2>/dev/null
 ls .agents/*.agent.* 2>/dev/null
 ls .claude/agents/*.agent.* .magent/agents/*.agent.* 2>/dev/null
 ```

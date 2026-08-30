@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Spec version string:** `1.0`
-**Maintenance release:** `1.0.1` (normative errata; document version remains `1.0`)
+**Maintenance release:** `1.0.2` (portable discovery and normative errata; document version remains `1.0`)
 **Schemas:** [`agent-profile.schema.json`](../../schema/v1/agent-profile.schema.json), [`agent-state-delta.schema.json`](../../schema/v1/agent-state-delta.schema.json)
 
 ## 1. Introduction
@@ -289,11 +289,19 @@ Six phases. A Level 1 implementation performs 1 through 4; Level 2 adds 5 and 6.
 Resolvers search discovery roots in this order, later roots taking precedence for the same name **only where the spec permits** (see §7.1):
 
 1. **Managed** (system or organization policy), for example `/etc/<harness>/agents/`
-2. **User**, for example `~/.config/<harness>/agents/`
+2. **User**, including the harness-neutral `~/.agentprofiles/` root and, when
+   supported, a harness-native root such as `~/.config/<harness>/agents/`
 3. **Project**, for example `<workspace>/.agents/`
 4. **Plugin or package**, contributed by installed extensions
 
 `.agents/` at the workspace root is the RECOMMENDED project location, because it is harness-neutral. Harnesses with an existing convention (`.magent/agents/`, `.claude/agents/`) SHOULD read both and SHOULD prefer the harness-native directory when a name appears in both, warning about the collision.
+
+`~/.agentprofiles/` is the RECOMMENDED universal user location. Conforming
+harnesses that implement a user discovery root SHOULD read it in addition to
+their native user directory. A harness-native user directory SHOULD take
+precedence over the universal directory on collision, and the collision MUST be
+reported. The universal directory has `user` trust; its name does not grant
+managed authority.
 
 Name collisions **within one root** are an error, not a silent precedence decision. Collisions **across roots** resolve by the order above and MUST be reported.
 

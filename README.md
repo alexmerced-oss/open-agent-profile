@@ -2,9 +2,9 @@
 
 **An open specification for persisting a named AI agent as a file instead of a running process.**
 
-Specification `1.0` · normative maintenance `1.0.1` · support-library release `1.0.4` · Draft
+Specification `1.0` · normative maintenance `1.0.2` · support-library release `1.0.5` · Draft
 
-Release preparation: [1.0.4 checklist](docs/release-1.0.4.md) · [internal security review](docs/security-review-1.0.4.md)
+Release preparation: [1.0.5 checklist](docs/release-1.0.5.md) · [internal security review](docs/security-review-1.0.5.md)
 
 [Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Support libraries](docs/support-libraries.md) · [Examples](examples/) · [Skills](skills/)
 
@@ -70,6 +70,15 @@ state:                      # what previous sessions learned
 
 No process is resident. The file is the agent.
 
+Portable user profiles have a shared discovery root: `~/.agentprofiles`. A harness may also keep
+its native user directory; when the same name exists in both, the native harness copy wins and the
+collision is reported. Project profiles still take precedence over user profiles.
+
+The bundled [`oap-profile-authoring`](skills/oap-profile-authoring/) skill turns a natural-language
+request into a conservative profile proposal. A direct user request may be saved through the
+harness's normal validation and approval boundary. An agent that merely decides a new subagent
+would help produces a proposal unless local policy explicitly permits activation.
+
 ## What makes it a specification rather than a file format
 
 Three rules, and they are the reason this is safe to leave switched on.
@@ -99,16 +108,16 @@ prompt rendering, and delta application. See [`typescript/`](typescript/) for th
 Go 1.26 or newer can use the root Go module with the same support surface:
 
 ```bash
-go get github.com/alexmerced-oss/open-agent-profile@v1.0.4
-go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.4 \
+go get github.com/alexmerced-oss/open-agent-profile@v1.0.5
+go run github.com/alexmerced-oss/open-agent-profile/cmd/oap-validate@v1.0.5 \
   --digest examples/code-reviewer.agent.yaml
 ```
 
 Rust users get the same support surface with an MSRV of Rust 1.85:
 
 ```bash
-cargo add open-agent-profile@1.0.4
-cargo install open-agent-profile --version 1.0.4
+cargo add open-agent-profile@1.0.5
+cargo install open-agent-profile --version 1.0.5
 oap-validate --digest examples/code-reviewer.agent.yaml
 ```
 
@@ -120,7 +129,7 @@ Java 17 users can use the Maven support library and executable CLI JAR:
 <dependency>
   <groupId>io.github.alexmercedcoder</groupId>
   <artifactId>open-agent-profile</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 ```
 
@@ -195,7 +204,7 @@ Implementation listings are evidence records, not endorsements. Conformance clai
 
 ## Status
 
-Draft specification 1.0, normative maintenance release 1.0.1. The document format remains `oap: "1.0"`. Support-library releases are versioned separately; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
+Draft specification 1.0, normative maintenance release 1.0.2. The document format remains `oap: "1.0"`. Support-library releases are versioned separately; any data-model addition changes the MINOR version and any incompatible change changes the MAJOR version. See [VERSIONING.md](VERSIONING.md).
 
 Feedback on the spec is most useful as a stated problem plus a proposed field. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

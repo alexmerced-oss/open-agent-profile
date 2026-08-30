@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "open-agent-profile"
-version = "1.0.4"
+version = "1.0.5"
 description = "Reference validator and applicator for the Open Agent Profile (OAP) specification"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -43,9 +43,10 @@ artifacts = ["schema/**/*.json"]
 "schema" = "oap/schema"
 "spec" = "oap/spec"
 "conformance" = "oap/conformance"
+"skills" = "oap/skills"
 
 [tool.hatch.build.targets.sdist]
-include = ["oap", "schema", "spec", "conformance", "examples", "tests", "docs", "README.md", "CHANGELOG.md", "VERSIONING.md", "GOVERNANCE.md", "MAINTAINERS.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE"]
+include = ["oap", "schema", "spec", "conformance", "skills", "examples", "tests", "docs", "README.md", "CHANGELOG.md", "VERSIONING.md", "GOVERNANCE.md", "MAINTAINERS.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -31,11 +31,15 @@ Four roots, in precedence order:
 | Root | Typical location | Trust |
 | --- | --- | --- |
 | Managed | `/etc/<harness>/agents/` | `managed` |
-| User | `~/.config/<harness>/agents/` | `user` |
+| User | `~/.agentprofiles/`, then `~/.config/<harness>/agents/` | `user` |
 | Project | `<workspace>/.agents/` | `project` |
 | Plugin | contributed by extensions | `project` |
 
 `.agents/` at the workspace root is the recommended project location because it is harness-neutral. A harness with its own convention (`.magent/agents/`, `.claude/agents/`) should read both and prefer its own on collision, with a warning.
+
+`~/.agentprofiles/` is the universal user root. Harnesses should read it before
+their native user root so a native profile can deliberately override a portable
+one. Both roots assign `user` trust, and every cross-root collision is reported.
 
 Two profiles with the same name **in one root** is an error, not a precedence puzzle. Across roots, later wins, and the harness reports it.
 

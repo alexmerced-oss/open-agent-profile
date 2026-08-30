@@ -26,6 +26,6 @@ println!("{:?}", profile_digests(&profile)?);
 ```
 
 ```console
-cargo install open-agent-profile --version 1.0.4
+cargo install open-agent-profile --version 1.0.5
 oap-validate --digest reviewer.agent.yaml
 ```

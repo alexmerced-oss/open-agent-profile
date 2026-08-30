@@ -6,6 +6,7 @@ Agent Skills packages that give OAP support to harnesses that do not have it nat
 | --- | --- |
 | [`oap-agent-profile`](oap-agent-profile/) | Discover, validate, and run as a profile. Assembles the system prompt in the specification's order, reports the requested capability surface, and injects learned state as untrusted content. |
 | [`oap-session-writeback`](oap-session-writeback/) | Turn a session into a reviewable `AgentStateDelta`, then apply it. Routes capability requests into `proposals` where a human approves them. |
+| [`oap-profile-authoring`](oap-profile-authoring/) | Turn a natural-language request into a conservative, schema-valid OAP profile proposal. Direct user requests may be saved after review; autonomous subagent ideas remain proposals until policy permits activation. |
 
 ## Installing
 
@@ -13,10 +14,10 @@ Both follow the [Agent Skills](https://code.claude.com/docs/en/skills) filesyste
 
 ```bash
 # Claude Code
-cp -r skills/oap-agent-profile skills/oap-session-writeback ~/.claude/skills/
+cp -r skills/oap-agent-profile skills/oap-session-writeback skills/oap-profile-authoring ~/.claude/skills/
 
 # A project-scoped skills directory
-cp -r skills/oap-agent-profile skills/oap-session-writeback .agents/skills/
+cp -r skills/oap-agent-profile skills/oap-session-writeback skills/oap-profile-authoring .agents/skills/
 ```
 
 Both need the reference tools:

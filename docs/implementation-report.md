@@ -1,6 +1,6 @@
 # Implementation report
 
-This report tracks public implementation evidence for OAP 1.0 maintenance release 1.0.1. A repository listing is not a conformance certification. Each implementation must publish a result matching `conformance/result.schema.json` and identify the exact OAP fixture revision it ran.
+This report tracks public implementation evidence for OAP 1.0 maintenance release 1.0.2. A repository listing is not a conformance certification. Each implementation must publish a result matching `conformance/result.schema.json` and identify the exact OAP fixture revision it ran.
 
 | Implementation | Repository | Observed surface | Verified status |
 | --- | --- | --- | --- |

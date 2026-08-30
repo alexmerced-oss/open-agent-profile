@@ -6,6 +6,16 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-08-30
+
+- Advanced the normative OAP 1.0 maintenance baseline to 1.0.2 without changing the document model.
+- Standardized `~/.agentprofiles/` as the universal user-profile discovery root, with native user
+  directories taking precedence and all cross-root collisions reported.
+- Added the portable `oap-profile-authoring` skill and review-first guidance for direct user and
+  autonomous subagent profile generation.
+- Included all three bundled OAP skills in the Python distribution and coordinated the Python,
+  TypeScript, Go, Rust, and Java support-library versions at 1.0.5.
+
 ## [1.0.4] - 2026-08-29
 
 - Aligned Python, TypeScript, Rust, and Java package metadata for a coordinated 1.0.4 release; the normative OAP maintenance baseline remains 1.0.1.
