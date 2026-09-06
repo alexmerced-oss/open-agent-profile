@@ -6,7 +6,7 @@ Specification `1.0` · normative maintenance `1.0.2` · support-library release 
 
 Release preparation: [1.0.5 checklist](docs/release-1.0.5.md) · [internal security review](docs/security-review-1.0.5.md)
 
-[Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [Docs](docs/) · [Support libraries](docs/support-libraries.md) · [Examples](examples/) · [Skills](skills/)
+[Specification](spec/v1/SPEC.md) · [Conformance](spec/v1/conformance.md) · [Security](spec/v1/security.md) · [WebMCP integration](docs/webmcp.md) · [Docs](docs/) · [Support libraries](docs/support-libraries.md) · [Examples](examples/) · [Skills](skills/)
 
 ---
 

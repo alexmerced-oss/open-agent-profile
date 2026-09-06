@@ -6,6 +6,11 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
+- Added non-normative WebMCP integration guidance showing how portable profiles can request
+  browser-native capabilities without embedding origins, credentials, or ambient authority.
+- Added a conforming least-authority WebMCP researcher example and documented runtime discovery,
+  revision binding, approval, portability, and audit responsibilities.
+
 ## [1.0.5] - 2026-08-30
 
 - Advanced the normative OAP 1.0 maintenance baseline to 1.0.2 without changing the document model.
