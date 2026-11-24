@@ -211,3 +211,7 @@ Feedback on the spec is most useful as a stated problem plus a proposed field. S
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE).
+
+## Maintenance
+
+[Maintenance findings, acceptance checks and completion log](docs/maintenance.md).
