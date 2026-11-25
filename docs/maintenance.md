@@ -6,7 +6,7 @@ Claim a row by entering your name or task ID and setting the status to **In prog
 
 | ID | Priority | Status | Owner | Fix and verification |
 | --- | --- | --- | --- | --- |
-| OAP-01 | P1 | Open | — | — |
+| OAP-01 | P1 | Done | — | `29eaccc`. Mixed valid and missing inputs exit 1 in JSON strict mode. Missing negative fixtures fail too. 75 tests passed. |
 
 ### OAP-01 · Fail validation when an explicitly requested file is missing
 
