@@ -523,3 +523,18 @@ def test_yaml_loader_is_safe() -> None:
 
     with pytest.raises(pyyaml.YAMLError):
         yaml_load("!!python/object/apply:os.system ['echo pwned']")
+
+
+def test_batch_cli_fails_if_a_requested_file_is_missing(tmp_path, capsys):
+    import json
+    from pathlib import Path
+    from oap.validate import main
+
+    example = Path(__file__).resolve().parents[1] / "examples" / "code-reviewer.agent.yaml"
+    missing = tmp_path / "missing.agent.yaml"
+    assert main([str(example), str(missing), "--json", "--strict"]) == 1
+    reports = json.loads(capsys.readouterr().out)
+    assert reports[0]["ok"]
+    assert not reports[1]["ok"]
+    assert reports[1]["path"] == str(missing)
+    assert main([str(missing), "--expect-invalid"]) == 1

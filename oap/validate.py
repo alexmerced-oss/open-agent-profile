@@ -112,6 +112,7 @@ class Report:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     digests: dict[str, str] = field(default_factory=dict)
+    unreadable: bool = False
 
     @property
     def ok(self) -> bool:
@@ -429,6 +430,10 @@ def validate_file(path: Path, profile_schema: dict[str, Any], delta_schema: dict
     try:
         doc, warnings = load_document(path)
         report.warnings.extend(warnings)
+    except (OSError, UnicodeError) as exc:
+        report.errors.append(f"cannot read document: {exc}")
+        report.unreadable = True
+        return report
     except Exception as exc:  # noqa: BLE001 - report, do not crash the run
         report.errors.append(f"parse error: {exc}")
         return report
@@ -476,10 +481,8 @@ def collect(paths: list[str]) -> list[Path]:
         path = Path(raw)
         if path.is_dir():
             found.extend(sorted(p for p in path.rglob("*") if p.is_file() and p.name.endswith(suffixes)))
-        elif path.is_file():
-            found.append(path)
         else:
-            print(f"warning: {raw} does not exist", file=sys.stderr)
+            found.append(path)
     return found
 
 
@@ -546,7 +549,7 @@ def main(argv: list[str] | None = None) -> int:
         unexpected = [r for r in reports if r.ok]
         for report in unexpected:
             print(f"unexpected pass: {report.path}", file=sys.stderr)
-        return 1 if unexpected else 0
+        return 1 if unexpected or any(report.unreadable for report in reports) else 0
 
     return 0 if all(r.ok for r in reports) else 1
 

@@ -4,7 +4,7 @@ package oap
 
 const (
 	OAPVersion     = "1.0"
-	SupportVersion = "1.0.5"
+	SupportVersion = "1.0.6"
 )
 
 type Document map[string]any
