@@ -6,6 +6,11 @@ The specification and the reference implementation share a version number at 1.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-11-26
+
+- Return a failure when an explicitly requested profile cannot be read.
+- Refresh the TypeScript dependency lockfile so the production audit passes.
+
 - Added non-normative WebMCP integration guidance showing how portable profiles can request
   browser-native capabilities without embedding origins, credentials, or ambient authority.
 - Added a conforming least-authority WebMCP researcher example and documented runtime discovery,
